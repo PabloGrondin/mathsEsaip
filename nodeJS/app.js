@@ -11,8 +11,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 var options = {
-    host: "localhost:5000",
+    host: "localhost",
     method: "POST",
+    port: 5000,
     headers: {
         "Content-Type": "application/json"
     }
@@ -26,7 +27,7 @@ console.log(test);
 });
 
 app.post('/calcul', function(req, res) {
-    console.log(req.body);// your JSON
+    console.log("receiving" +req.body);// your JSON
     var req2 = http.request(options, function (res) {
         var responseString = "";
         res.on("data", function (data) {
@@ -39,7 +40,9 @@ app.post('/calcul', function(req, res) {
         });
     });
     var reqBody = JSON.stringify(req.body);
+    console.log("sending" +reqBody);
     req2.write(reqBody);
+    req2.end();
     res.send(req.body);// echo the result back
   });
 
