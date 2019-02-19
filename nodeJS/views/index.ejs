@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+    <h1>Optimisation linéaire!</h1>
+
+    <!-- Partie pour la fonction à optimiser -->
+    <h2>Fonction à optimiser : </h2>
+    <label for="inTextNombreVariable">Nombre de variables dans l'équation à optimiser : </label> 
+    <input type="number" id="inTextNombreVariable" min="1" max="5">
+    <p id="fonctionAOptimiser"></p>
+    <!-- Partie pour les contraintes -->
+    <h2>Contraintes : </h2>
+    <label for="inTextNombreContrainte">Nombre de contraintes : </label> 
+    <input type="number" id="inTextNombreContrainte" min="0" max="10">
+    <p id="contraintes"></p>
+    <p id=button></p>
+    <p id="result"></p>
+    <script>
+
+        var nbVariable;
+        var nbContrainte;
+        // Partie pour la fonction à optimiser
+        document.getElementById("inTextNombreVariable").addEventListener("change", function(){
+        nbVariable = document.getElementById("inTextNombreVariable").value;
+        updateFonctionAOptimiser(nbVariable);
+        });
+
+        function updateFonctionAOptimiser(nb){
+            var container = document.getElementById("contraintes");
+            container.innerHTML = "";
+            container = document.getElementById("fonctionAOptimiser");
+            container.innerHTML = "";
+            for (var i = 0; i < nb; i++) {
+                var labelX = document.createElement("label");
+                labelX.id = "label" +i;
+                labelX.for = "variable" +i;
+                labelX.innerHTML = '  x'  +i +"*";
+                container.appendChild(labelX);
+
+                var inputvar = document.createElement("input");
+                inputvar.id = "variable" +i;
+                inputvar.type = "number";
+                container.appendChild(inputvar);
+            }   
+
+            var renduEquation = document.createElement("p");
+            renduEquation.id = "renduEquation";
+            container.appendChild(renduEquation);
+            container.addEventListener("change", function(){
+                renduEquation.innerHTML = " L'équation à optimiser est : [Z = "
+                for (var i = 0; i < nb; i++) {
+                    if(document.getElementById("variable"+i).value != null){
+                        var variable = document.getElementById("variable"+i).value;
+                        if(variable < 0){
+                            renduEquation.innerHTML += " - " +(-1*variable) +"x"+i;
+                        }else if(variable > 0){
+                            renduEquation.innerHTML += " + " +variable +"x"+i;
+                        }
+                    }
+                }
+                renduEquation.innerHTML += "]";
+            });
+        }
+        
+       // Partie pour les contraintes
+        document.getElementById("inTextNombreContrainte").addEventListener("change", function(){
+        nbContrainte = document.getElementById("inTextNombreContrainte").value;
+        updateContraintes(nbContrainte);
+        });
+
+        function updateContraintes(nb){
+            var container = document.getElementById("contraintes");
+            container.innerHTML = "";
+            for (var i = 0; i < nb; i++) {
+                insertContrainte(container, i);
+            }
+        }
+
+        //fonction pour inserer une nouvelle ligne de contrainte
+        function insertContrainte(container, numero){
+
+            var divContrainte = document.createElement("div");
+            divContrainte.id = "divContrainte" +numero;
+            divContrainte.innerHTML = 'Contrainte '  +numero +" : ";
+            container.appendChild(divContrainte);
+
+            for (var i = 0; i < nbVariable; i++) {
+
+                var inputContrainte = document.createElement("input");
+                inputContrainte.id = "contrainteX" +numero+i;
+                inputContrainte.type = "number";
+                
+
+                var labelContrainte = document.createElement("label");
+                labelContrainte.id = "labelContrainte" +numero+i;
+                labelContrainte.for = "inputContrainte" +numero+i;
+                labelContrainte.innerHTML = '  x'  +i +"*";
+                divContrainte.appendChild(labelContrainte);
+                divContrainte.appendChild(inputContrainte);
+            }
+
+            //les radio boutons pour la contrainte
+            //radio inferieur
+            var radioContrainteInf = document.createElement("input");
+            radioContrainteInf.id = "radioContrainteInf" +numero;
+            radioContrainteInf.type = "radio";
+            radioContrainteInf.name = "radioContrainte" +numero;
+            radioContrainteInf.value = "lol";
+            var labelRadioContrainteInf = document.createElement("label");
+            labelRadioContrainteInf.id = "labelRadioContrainteInf" +numero;
+            labelRadioContrainteInf.for = "radioContrainteInf" +numero;
+            labelRadioContrainteInf.innerHTML = " <";
+            divContrainte.appendChild(labelRadioContrainteInf);
+            divContrainte.appendChild(radioContrainteInf);
+            //radio supperieur
+            var radioContrainteSup = document.createElement("input");
+            radioContrainteSup.id = "radioContrainteSup" +numero;
+            radioContrainteSup.type = "radio";
+            radioContrainteSup.name = "radioContrainte" +numero;
+            radioContrainteSup.value = ">";
+            var labelRadioContrainteSup = document.createElement("label");
+            labelRadioContrainteSup.id = "labelRadioContrainteSup" +numero;
+            labelRadioContrainteSup.for = "radioContrainteSup" +numero;
+            labelRadioContrainteSup.innerHTML = " >";
+            divContrainte.appendChild(labelRadioContrainteSup);
+            divContrainte.appendChild(radioContrainteSup);
+            // radio egal
+            var radioContrainteEg = document.createElement("input");
+            radioContrainteEg.id = "radioContrainteEg" +numero;
+            radioContrainteEg.type = "radio";
+            radioContrainteEg.name = "radioContrainte" +numero;
+            radioContrainteEg.value = "=";
+            var labelRadioContrainteEg = document.createElement("label");
+            labelRadioContrainteEg.id = "labelRadioContrainteEg" +numero;
+            labelRadioContrainteEg.for = "radioContrainteEg" +numero;
+            labelRadioContrainteEg.innerHTML = " =";
+            divContrainte.appendChild(labelRadioContrainteEg);
+            divContrainte.appendChild(radioContrainteEg);
+
+            var inputValeurContrainte = document.createElement("input");
+            inputValeurContrainte.id = "valeurContrainteX" +numero;
+            inputValeurContrainte.type = "number";
+            var labelValeurContrainte = document.createElement("label");
+            labelValeurContrainte.id = "labelValeurContrainte" +numero;
+            labelValeurContrainte.for = "valeurContrainteX" +numero;
+            labelValeurContrainte.innerHTML = " valeure : ";
+            divContrainte.appendChild(labelValeurContrainte);
+            divContrainte.appendChild(inputValeurContrainte);
+
+            var renduContrainte = document.createElement("p");
+            renduContrainte.id = "renduContrainte" +numero;
+            renduContrainte.innerHTML = " ==> [";
+            divContrainte.appendChild(renduContrainte);
+            divContrainte.addEventListener("change", function(){
+                renduContrainte.innerHTML = " ==> [";
+                for (var i = 0; i < nbVariable; i++) {
+                    if(document.getElementById("contrainteX"+numero +i).value != null){
+                        var variable = document.getElementById("contrainteX"+numero +i).value;
+                        if(variable < 0){
+                            renduContrainte.innerHTML += " -" +(-1*variable) +"x"+i;
+                        }else if(variable > 0){
+                            renduContrainte.innerHTML += " +" +variable +"x"+i;
+                        }
+                    }
+                }
+                if (document.getElementById("radioContrainteInf" +numero).checked) {
+                    renduContrainte.innerHTML += " < ";
+                }else if(document.getElementById("radioContrainteSup" +numero).checked){
+                    renduContrainte.innerHTML += " > ";
+                }else if(document.getElementById("radioContrainteEg" +numero).checked){
+                    renduContrainte.innerHTML += " = ";
+                }
+
+                renduContrainte.innerHTML += (document.getElementById("valeurContrainteX" +numero).value +"]");
+            });
+        }
+       
+        var containerButton = document.getElementById("button");
+        var btn = document.createElement("button");
+        btn.innerHTML = "envoyer";
+        containerButton.appendChild(btn);  
+        btn.addEventListener("click", function() {
+            var xhr = new XMLHttpRequest();
+            var url = "http://localhost/calcul";
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var json = JSON.parse(xhr.responseText);
+                    updateResult(json);
+                }
+            };
+
+            var JSONdata = 
+            {
+                "equation":[],
+                "contraintes":[],
+                "symboles":[],
+                "valeurs":[]
+            };
+            for (var i = 0; i<nbVariable; i++){
+                JSONdata.equation.push(document.getElementById("variable"+i).value);
+            }
+
+            for (var y = 0; y<nbContrainte; y++){
+
+                JSONdata.valeurs.push(document.getElementById("valeurContrainteX"+y).value);
+
+                if(document.getElementById("radioContrainteInf"+y).checked){
+                    JSONdata.symboles.push("<");
+                }else if(document.getElementById("radioContrainteSup"+y).checked){
+                    JSONdata.symboles.push(">");
+                }else if(document.getElementById("radioContrainteEg"+y).checked){
+                    JSONdata.symboles.push("=");
+                }
+                
+                var JSONcontrainte = [];
+                for (var z = 0; z<nbVariable; z++){
+                    JSONcontrainte.push(document.getElementById("contrainteX"+y+z).value);
+                }
+                JSONdata.contraintes.push(JSONcontrainte);
+            }
+            var dataToString = JSON.stringify(JSONdata);
+            xhr.send(dataToString);
+        });
+
+        //////////////////////////////////////////////////////////////////////////
+        ////////////////////PARTIE AFFICHAGE RESULTATS //////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+
+        function updateResult(result){
+            var container = document.getElementById("result");
+            container.innerHTML = JSON.stringify(result);
+        }
+    </script>
+</body>
+</html>

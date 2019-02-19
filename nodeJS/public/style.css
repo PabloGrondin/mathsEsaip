@@ -1,0 +1,38 @@
+/*label { display: block; }*/
+html, body {
+    margin: 10;
+    padding: 0;
+    }
+   body {
+    background-color: white; 
+    font-family: Verdana, sans-serif; 
+    font-size: 14px;
+    }
+   h1 {
+    font-size: 32px; 
+    color: DarkSlateGray; 
+    text-align: center;
+    }
+   h2 {
+    font-size: 16px; 
+    color: CadetBlue; 
+    padding-left: 15px;
+    margin-top: 32px;
+    }
+    input[type="number"]{
+    padding: 3px 3px;
+    margin: 3px 3px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+    }
+    p input[type="number"]{
+        width:100px;
+    }
+    [id^=rendu]{
+        font-style: italic;
+        padding-left: 12px;
+        font-size: 12px;
+        color: Gray; 
+    }
