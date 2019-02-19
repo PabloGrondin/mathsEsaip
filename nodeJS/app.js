@@ -3,11 +3,20 @@ var express = require('express');
 var fnc = require('./tools')
 var bodyParser = require("body-parser");
 require('./tools.js')();
+var http = require("http");
 
 var app = express();
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+var options = {
+    host: "localhost:5000",
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    }
+};
 
 
 app.get('/', function(req, res) {
@@ -18,19 +27,22 @@ console.log(test);
 
 app.post('/calcul', function(req, res) {
     console.log(req.body);// your JSON
-    var xhr = new XMLHttpRequest();
-    var url = "http://localhost:5000";
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            var json = JSON.parse(xhr.responseText);
-            console.log(json);
-        }
-    xhr.send(req.body);
+    var req2 = http.request(options, function (res) {
+        var responseString = "";
+        res.on("data", function (data) {
+            responseString += data;
+            // save all the data from response
+        });
+        res.on("end", function () {
+            console.log(responseString); 
+            // print to console when response ends
+        });
+    });
+    var reqBody = JSON.stringify(req.body);
+    req2.write(reqBody);
     res.send(req.body);// echo the result back
-  };
-});
+  });
+
 
 app.listen(80);
 
