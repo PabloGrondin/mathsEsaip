@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 var options = {
-    host: "localhost",
+    host: "localhost/calcul",
     method: "POST",
     port: 5000,
     headers: {
